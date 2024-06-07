@@ -39,9 +39,9 @@ if uploaded_file is not None:
 
     # Display class probabilities as a progress bar chart
     st.subheader('Class Probabilities')
-    st.progress(class_probabilities['Adult Content'], 'Adult Content')
-    st.progress(class_probabilities['Safe'], 'Safe')
-    st.progress(class_probabilities['Violent'], 'Violent')
+    st.progress(class_probabilities['Adult Content'])
+    st.progress(class_probabilities['Safe'])
+    st.progress(class_probabilities['Violent'])
 
     # Display class probabilities as a table
     st.subheader('Class Probabilities')
