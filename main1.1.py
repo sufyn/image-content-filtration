@@ -1,10 +1,13 @@
 import streamlit as st
 from PIL import Image
 import tensorflow as tf
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing import image
 import numpy as np
 
 # Load the trained model
-model = tf.keras.models.load_model('new.h5')
+model = load_model('ml2.h5')
+
 
 # Define a function to predict the class of an uploaded image
 def predict(image):
@@ -12,7 +15,8 @@ def predict(image):
     image = np.array(image) / 255.0
     image = np.expand_dims(image, axis=0)
     prediction = model.predict(image)
-    return np.argmax(prediction, axis=1)[0]
+    print(prediction)
+    return np.argmax(prediction, axis=1)[0], prediction
 
 # Streamlit app interface
 st.title('Image Content Classification')
@@ -25,7 +29,8 @@ if uploaded_file is not None:
     st.image(image, caption='Uploaded Image', use_column_width=True)
     st.write("")
     st.write("Classifying...")
-    label = predict(image)
-    
-    categories = ['Violent', 'Adult Content', 'Safe']
+    label, prediction = predict(image)
+    categories = ['Adult Content','Safe','Violent']
+    predicted_category = categories[label]
     st.write(f'This image is classified as: {categories[label]}')
+    st.write(f'Predicted: {predicted_category} (Confidence: {prediction[0][label]:.2f})')
