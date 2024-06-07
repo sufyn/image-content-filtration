@@ -37,60 +37,15 @@ if uploaded_file is not None:
     # Access individual class probabilities from prediction
     class_probabilities = {category: prob for category, prob in zip(categories, prediction[0])}
 
-    # Display class probabilities as a progress bar chart
-    st.subheader('Class Probabilities')
-    st.progress(int(class_probabilities['Adult Content']))
-    st.progress(int(class_probabilities['Safe']))
-    st.progress(int(class_probabilities['Violent']))
-
     # Display class probabilities as a table
     st.subheader('Class Probabilities')
     st.table(class_probabilities)
-
-    # Display the raw prediction values
-    st.subheader('Raw Prediction Values')
-    st.write(prediction)
 
     Validation_Loss= 0.8010649681091309
     Validation_Accuracy= 0.719298243522644
     st.write("Model Statistics:")
     st.write(f"- Validation Accuracy: {Validation_Accuracy:.2f}")
-
-    # Display precision and recall in a table
-    st.dataframe(pd.DataFrame({'Category': categories, 'Validation Accuracy': Validation_Accuracy, 'Validation Loss': Validation_Loss}))
-
-    # Display the model summary
-    st.write("Model Summary:")
-    st.write(model.summary())
-
-    # Display the model architecture
-    st.write("Model Architecture:")
-    st.write(model.to_json())
-
-    # Display the model weights
-    st.write("Model Weights:")
-    st.write(model.get_weights())
-
-    # Display the model optimizer
-    st.write("Model Optimizer:")
-    st.write(model.optimizer)
-
-    # Display the model loss function
-    st.write("Model Loss Function:")
-
-    st.write(model.loss)
-
-    # Display the model metrics
-    st.write("Model Metrics:")
-    st.write(model.metrics)
-
-    # Display the model learning rate
-    st.write("Model Learning Rate:")
-    st.write(model.optimizer.learning_rate)
-
-    # Display the model loss function
-    st.write("Model Loss Function:")
-    st.write(model.loss)
+    st.write(f"- Validation Loss: {Validation_Loss:.2f}")
 
       # Add a collapsible section for detailed prediction breakdown (optional)
     with st.expander("Detailed Prediction Breakdown"):
