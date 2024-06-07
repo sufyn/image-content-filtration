@@ -5,6 +5,7 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 # Load the trained model
 model = load_model('ml2.h5')
 
@@ -37,9 +38,6 @@ if uploaded_file is not None:
     # Access individual class probabilities from prediction
     class_probabilities = {category: prob for category, prob in zip(categories, prediction[0])}
 
-    # Display class probabilities as a table
-    st.subheader('Class Probabilities')
-    st.table(class_probabilities)
 
     Validation_Loss= 0.8010649681091309
     Validation_Accuracy= 0.719298243522644
@@ -52,4 +50,57 @@ if uploaded_file is not None:
         for i, category in enumerate(categories):
             class_probability = prediction[0][i]
             st.write(f"- {category}: {class_probability:.2f}")
-            
+
+    
+    # Display class probabilities as a table
+    st.subheader('Class Probabilities')
+    st.table(class_probabilities)        
+
+    # Display prediction details
+    fig, ax = plt.subplots()
+    ax.bar(categories, prediction[0])
+    ax.set_ylabel('Confidence')
+    ax.set_title('Prediction Confidence for Each Category')
+    st.pyplot(fig)
+    
+    # Display a pie chart of class probabilities
+    fig, ax = plt.subplots()
+    ax.pie(prediction[0], labels=categories, autopct='%1.1f%%')
+    
+    ax.set_title('Class Probabilities')
+    st.pyplot(fig)
+
+    # Display a bar chart of class probabilities
+    fig, ax = plt.subplots()
+    ax.barh(categories, prediction[0])
+    ax.set_xlabel('Confidence')
+    ax.set_title('Prediction Confidence for Each Category')
+    st.pyplot(fig)
+
+    # Display model accuracy and loss
+    history = np.load('model/ml2_history.npy', allow_pickle=True).item()
+    
+    st.write("### Model Performance")
+    st.write(f"Validation Accuracy: {history['val_accuracy'][-1]:.2f}")
+    st.write(f"Validation Loss: {history['val_loss'][-1]:.2f}")
+
+    # Plot accuracy and loss over epochs
+    st.write("### Training History")
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
+    ax1.plot(history['accuracy'], label='Training Accuracy')
+    ax1.plot(history['val_accuracy'], label='Validation Accuracy')
+    ax1.set_title('Accuracy')
+    ax1.set_xlabel('Epoch')
+    ax1.set_ylabel('Accuracy')
+    ax1.legend()
+
+    ax2.plot(history['loss'], label='Training Loss')
+    ax2.plot(history['val_loss'], label='Validation Loss')
+    ax2.set_title('Loss')
+    ax2.set_xlabel('Epoch')
+    ax2.set_ylabel('Loss')
+    ax2.legend()
+
+    st.pyplot(fig)
+
+
