@@ -73,3 +73,6 @@ streamlit run app.py
 ```
 
 This will start the Streamlit server, and you can interact with the web app through your browser, uploading images and viewing classification results.
+https://figshare.com/articles/dataset/Adult_content_dataset/13456484
+https://www.kaggle.com/datasets/karandeep98/real-life-violence-and-nonviolence-data/data
+https://www.kaggle.com/datasets/kartikeybartwal/graphical-violence-and-safe-images-dataset/code
