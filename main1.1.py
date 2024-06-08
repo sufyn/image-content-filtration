@@ -6,11 +6,12 @@ from tensorflow.keras.preprocessing import image
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+
 # Load the trained model
 model = load_model('ml2.h5')
 
 
-# Define a function to predict the class of an uploaded image
+# predict the class 
 def predict(image):
     image = image.resize((128, 128))
     image = np.array(image) / 255.0
@@ -19,7 +20,6 @@ def predict(image):
     print(prediction)
     return np.argmax(prediction, axis=1)[0], prediction
 
-# Streamlit app interface
 st.title('Image Content Classification')
 st.write('Upload an image to classify it into Violent, Adult Content, or Safe.')
 
@@ -35,17 +35,16 @@ if uploaded_file is not None:
     predicted_category = categories[label]
     st.write(f'This image is classified as: {categories[label]}')
     st.write(f'Predicted: {predicted_category} (Confidence: {prediction[0][label]:.2f})')
+
     # Access individual class probabilities from prediction
     class_probabilities = {category: prob for category, prob in zip(categories, prediction[0])}
-
-
     Validation_Loss= 0.8010649681091309
     Validation_Accuracy= 0.719298243522644
+
     st.write("Model Statistics:")
     st.write(f"- Validation Accuracy: {Validation_Accuracy:.2f}")
     st.write(f"- Validation Loss: {Validation_Loss:.2f}")
 
-      # Add a collapsible section for detailed prediction breakdown (optional)
     with st.expander("Detailed Prediction Breakdown"):
         for i, category in enumerate(categories):
             class_probability = prediction[0][i]
