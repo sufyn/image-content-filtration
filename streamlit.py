@@ -43,6 +43,8 @@ elif image_url:
         if response.status_code == 200:
             response.raw.decode_content = True
             img = Image.open(BytesIO(response.content))
+            if img.mode == 'RGBA':
+                img = image.convert('RGB')
             if img.format.lower() not in ['jpeg', 'jpg', 'png', 'webp']:
                 st.error("Unsupported image format")
             else:
