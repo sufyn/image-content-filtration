@@ -30,6 +30,9 @@ image_url = st.text_input("Or enter an image URL:")
 
 if uploaded_file is not None:
     img = Image.open(uploaded_file)
+    if img.mode == 'RGBA':
+                img = img.convert('RGB')
+
     st.image(img, caption="Uploaded Image", use_column_width=True)
     label, prediction = predict(img)
     categories = ['Adult Content', 'Safe', 'Violent']
