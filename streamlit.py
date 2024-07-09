@@ -9,8 +9,8 @@ import requests
 # Load models
 model_paths = {
     "Model 1.1": 'model/img_model_1.1.h5',
-    "Model 2.0": 'model/img_model_2.0.h5',  # Add paths for other models here
-    "Model 3.0": 'model/img_model_3.0.h5'
+    "Model 2.0": 'ml1.h5',  # Add paths for other models here
+    "Model 3.0": 'ml2.h5'
 }
 
 # Predict the class
