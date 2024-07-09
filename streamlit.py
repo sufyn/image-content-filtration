@@ -6,11 +6,15 @@ import numpy as np
 from io import BytesIO
 import requests
 
-# Load the trained model
-model = load_model('model/img_model_1.1.h5')
+# Load models
+model_paths = {
+    "Model 1.1": 'model/img_model_1.1.h5',
+    "Model 2.0": 'model/img_model_2.0.h5',  # Add paths for other models here
+    "Model 3.0": 'model/img_model_3.0.h5'
+}
 
 # Predict the class
-def predict(img):
+def predict(img, model):
     img = img.resize((128, 128))
     img = np.array(img) / 255.0
     img = np.expand_dims(img, axis=0)
@@ -20,6 +24,13 @@ def predict(img):
 st.title("Image Classification App")
 
 st.write("Upload an image or provide an image URL to classify.")
+
+# Select model
+selected_model_name = st.selectbox("Select Model", list(model_paths.keys()))
+selected_model_path = model_paths[selected_model_name]
+
+# Load the selected model
+model = load_model(selected_model_path)
 
 # Upload image file
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "webp"])
@@ -35,7 +46,7 @@ if st.button("Submit"):
             img = img.convert('RGB')
             
         st.image(img, caption="Uploaded Image", use_column_width=True)
-        label, prediction = predict(img)
+        label, prediction = predict(img, model)
         categories = ['Adult Content', 'Safe', 'Violent']
         predicted_category = categories[label]
         st.write(f"Classification: {predicted_category}")
@@ -52,7 +63,7 @@ if st.button("Submit"):
                     img = img.convert('RGB')
                 
                 st.image(img, caption="Fetched Image", use_column_width=True)
-                label, prediction = predict(img)
+                label, prediction = predict(img, model)
                 categories = ['Adult Content', 'Safe', 'Violent']
                 predicted_category = categories[label]
                 st.write(f"Classification: {predicted_category}")
