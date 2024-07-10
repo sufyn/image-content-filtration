@@ -23,6 +23,16 @@ classificationModel = load_model(classificationModelPath)
 
 # Age categories
 ageList = ['(0-2)', '(4-6)', '(8-12)', '(15-20)', '(25-32)', '(38-43)', '(48-53)', '(60-100)']
+ageThresholds = {
+    '(0-2)': 'Minor',
+    '(4-6)': 'Minor',
+    '(8-12)': 'Minor',
+    '(15-20)': 'Minor',
+    '(25-32)': 'Adult',
+    '(38-43)': 'Adult',
+    '(48-53)': 'Adult',
+    '(60-100)': 'Adult'
+}
 
 # Prediction function for standard classification model
 def predict_classification(img, model):
@@ -99,12 +109,20 @@ if st.button("Submit"):
             img_cv = np.array(img)
             result_img, face_boxes, age_predictions = detect_and_predict_age(faceNet, ageNet, img_cv)
             st.image(result_img, caption="Image with Age Prediction", use_column_width=True)
-            st.write(f"Age Predictions: {age_predictions}")
+            for age in age_predictions:
+                if age:
+                    st.write(f"Age: {age} - {ageThresholds[age]}")
+                else:
+                    st.write("No age predicted")
         elif operation_mode == "Only Age Prediction":
             img_cv = np.array(img)
             result_img, face_boxes, age_predictions = detect_and_predict_age(faceNet, ageNet, img_cv)
             st.image(result_img, caption="Image with Age Prediction", use_column_width=True)
-            st.write(f"Age Predictions: {age_predictions}")
+            for age in age_predictions:
+                if age:
+                    st.write(f"Age: {age} - {ageThresholds[age]}")
+                else:
+                    st.write("No age predicted")
 
     elif image_url:
         try:
@@ -132,12 +150,20 @@ if st.button("Submit"):
                     img_cv = np.array(img)
                     result_img, face_boxes, age_predictions = detect_and_predict_age(faceNet, ageNet, img_cv)
                     st.image(result_img, caption="Image with Age Prediction", use_column_width=True)
-                    st.write(f"Age Predictions: {age_predictions}")
+                    for age in age_predictions:
+                        if age:
+                            st.write(f"Age: {age} - {ageThresholds[age]}")
+                        else:
+                            st.write("No age predicted")
                 elif operation_mode == "Only Age Prediction":
                     img_cv = np.array(img)
                     result_img, face_boxes, age_predictions = detect_and_predict_age(faceNet, ageNet, img_cv)
                     st.image(result_img, caption="Image with Age Prediction", use_column_width=True)
-                    st.write(f"Age Predictions: {age_predictions}")
+                    for age in age_predictions:
+                        if age:
+                            st.write(f"Age: {age} - {ageThresholds[age]}")
+                        else:
+                            st.write("No age predicted")
             else:
                 st.error("Failed to retrieve image from the provided URL")
         except Exception as e:
