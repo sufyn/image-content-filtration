@@ -12,49 +12,25 @@ faceProto = 'model/opencv_face_detector.pbtxt'
 faceModel = 'model/opencv_face_detector_uint8.pb'
 ageProto = 'model/age_deploy.prototxt'
 ageModel = 'model/age_net.caffemodel'
+classificationModelPath = 'model/img_model_1.1.h5'  # Adjust this path if needed
 
 # Load OpenCV models
 faceNet = cv2.dnn.readNet(faceModel, faceProto)
 ageNet = cv2.dnn.readNet(ageModel, ageProto)
 
+# Load classification model
+classificationModel = load_model(classificationModelPath)
+
 # Age categories
 ageList = ['(0-2)', '(4-6)', '(8-12)', '(15-20)', '(25-32)', '(38-43)', '(48-53)', '(60-100)']
 
-# Load classification models
-model_paths = {
-    "Model 1.1 (small)": 'model/img_model_1.1.h5',
-    "Model 2.0 (combined)": 'model/combined_model.h5',
-    "Model 3.0 (large)": 'model/large_ml.h5'
-}
-
-# Load the selected model
-def load_selected_model(selected_model_name):
-    model = load_model(model_paths[selected_model_name])
-    return model
-
 # Prediction function for standard classification model
-def predict_standard(img, model):
+def predict_classification(img, model):
     img = img.resize((128, 128))
     img = np.array(img) / 255.0
     img = np.expand_dims(img, axis=0)
     prediction = model.predict(img)
     return np.argmax(prediction, axis=1)[0], prediction
-
-# Prediction function for combined model
-def predict_combined(img, model):
-    img = img.resize((128, 128))
-    img = np.array(img) / 255.0
-    img = np.expand_dims(img, axis=0)
-    predictions = model.predict(img)
-    
-    # Assuming the combined model outputs two sets of predictions: class and age
-    class_prediction = predictions[0]
-    age_prediction = predictions[1]
-    
-    predicted_class = np.argmax(class_prediction, axis=1)[0]
-    predicted_age = age_prediction[0][0]  # Assuming age prediction is a single scalar value
-    
-    return predicted_class, class_prediction, predicted_age
 
 # Function to detect faces and predict age using OpenCV
 def detect_and_predict_age(net, age_net, frame, confidence_threshold=0.7):
@@ -92,14 +68,7 @@ st.title("Image Classification and Age Prediction App")
 st.write("Upload an image or provide an image URL to classify.")
 
 # Select operation mode
-operation_mode = st.selectbox("Select Operation Mode", ["Age and Classification", "Combined Model", "Only Age Prediction"])
-
-# Select model if necessary
-if operation_mode in ["Age and Classification", "Combined Model"]:
-    selected_model_name = st.selectbox("Select Model", list(model_paths.keys()))
-
-    # Load the selected model
-    model = load_selected_model(selected_model_name)
+operation_mode = st.selectbox("Select Operation Mode", ["Age and Classification", "Only Age Prediction"])
 
 # Upload image file
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "webp"])
@@ -116,23 +85,16 @@ if st.button("Submit"):
             
         st.image(img, caption="Uploaded Image", use_column_width=True)
         
-        if operation_mode == "Combined Model":
-            label, class_prediction, age_prediction = predict_combined(img, model)
-            categories = ['Adult Content', 'Safe', 'Violent']
-            predicted_category = categories[label]
-            st.write(f"Classification: {predicted_category}")
-            st.write(f"Adult Confidence: {float(class_prediction[0][0]) * 100:.2f}%")
-            st.write(f"Safe Confidence: {float(class_prediction[0][1]) * 100:.2f}%")
-            st.write(f"Violent Confidence: {float(class_prediction[0][2]) * 100:.2f}%")
-            st.write(f"Predicted Age: {age_prediction:.2f}")
-        elif operation_mode == "Age and Classification":
-            label, prediction = predict_standard(img, model)
+        if operation_mode == "Age and Classification":
+            # Predict classification
+            label, prediction = predict_classification(img, classificationModel)
             categories = ['Adult Content', 'Safe', 'Violent']
             predicted_category = categories[label]
             st.write(f"Classification: {predicted_category}")
             st.write(f"Adult Confidence: {float(prediction[0][0]) * 100:.2f}%")
             st.write(f"Safe Confidence: {float(prediction[0][1]) * 100:.2f}%")
             st.write(f"Violent Confidence: {float(prediction[0][2]) * 100:.2f}%")
+            
             # Also predict age using OpenCV
             img_cv = np.array(img)
             result_img, face_boxes, age_predictions = detect_and_predict_age(faceNet, ageNet, img_cv)
@@ -156,23 +118,16 @@ if st.button("Submit"):
                 
                 st.image(img, caption="Fetched Image", use_column_width=True)
                 
-                if operation_mode == "Combined Model":
-                    label, class_prediction, age_prediction = predict_combined(img, model)
-                    categories = ['Adult Content', 'Safe', 'Violent']
-                    predicted_category = categories[label]
-                    st.write(f"Classification: {predicted_category}")
-                    st.write(f"Adult Confidence: {float(class_prediction[0][0]) * 100:.2f}%")
-                    st.write(f"Safe Confidence: {float(class_prediction[0][1]) * 100:.2f}%")
-                    st.write(f"Violent Confidence: {float(class_prediction[0][2]) * 100:.2f}%")
-                    st.write(f"Predicted Age: {age_prediction:.2f}")
-                elif operation_mode == "Age and Classification":
-                    label, prediction = predict_standard(img, model)
+                if operation_mode == "Age and Classification":
+                    # Predict classification
+                    label, prediction = predict_classification(img, classificationModel)
                     categories = ['Adult Content', 'Safe', 'Violent']
                     predicted_category = categories[label]
                     st.write(f"Classification: {predicted_category}")
                     st.write(f"Adult Confidence: {float(prediction[0][0]) * 100:.2f}%")
                     st.write(f"Safe Confidence: {float(prediction[0][1]) * 100:.2f}%")
                     st.write(f"Violent Confidence: {float(prediction[0][2]) * 100:.2f}%")
+                    
                     # Also predict age using OpenCV
                     img_cv = np.array(img)
                     result_img, face_boxes, age_predictions = detect_and_predict_age(faceNet, ageNet, img_cv)
