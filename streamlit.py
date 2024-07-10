@@ -107,8 +107,8 @@ image_url = st.text_input("Or enter an image URL:")
 if st.button("Submit"):
     if uploaded_file is not None:
         img = Image.open(uploaded_file)
-        if img.mode == 'RGB':
-            img = img.convert('RGBA')
+        if img.mode == 'RGBA':
+            img = img.convert('RGB')
             
         st.image(img, caption="Uploaded Image", use_column_width=True)
         
