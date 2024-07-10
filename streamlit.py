@@ -8,9 +8,9 @@ import requests
 
 # Load models
 model_paths = {
-    "Model 1.1": 'model/img_model_1.1.h5',
-    "Model 2.0": 'model/combined_model.h5',  # Assuming this is the combined model
-    "Model 3.0": 'ml.h5'
+    "Model 1.1 (small)": 'model/img_model_1.1.h5',
+    "Model 2.0 (combined)": 'model/combined_model.h5',  # Assuming this is the combined model
+    "Model 3.0 (large)": 'model/large_ml.h5'
 }
 
 # Load the selected model
@@ -67,7 +67,7 @@ if st.button("Submit"):
             
         st.image(img, caption="Uploaded Image", use_column_width=True)
         
-        if selected_model_name == "Model 2.0":
+        if selected_model_name == "Model 2.0 (combined)":
             label, class_prediction, age_prediction = predict_combined(img, model)
             categories = ['Adult Content', 'Safe', 'Violent']
             predicted_category = categories[label]
@@ -95,7 +95,7 @@ if st.button("Submit"):
                 
                 st.image(img, caption="Fetched Image", use_column_width=True)
                 
-                if selected_model_name == "Model 2.0":
+                if selected_model_name == "Model 2.0 (combined)":
                     label, class_prediction, age_prediction = predict_combined(img, model)
                     categories = ['Adult Content', 'Safe', 'Violent']
                     predicted_category = categories[label]
