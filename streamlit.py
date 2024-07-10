@@ -8,10 +8,10 @@ import requests
 import cv2
 
 # Path to models
-faceProto = 'path/to/opencv_face_detector.pbtxt'
-faceModel = 'path/to/opencv_face_detector_uint8.pb'
-ageProto = 'path/to/age_deploy.prototxt'
-ageModel = 'path/to/age_net.caffemodel'
+faceProto = 'model/opencv_face_detector.pbtxt'
+faceModel = 'model/opencv_face_detector_uint8.pb'
+ageProto = 'model/age_deploy.prototxt'
+ageModel = 'model/age_net.caffemodel'
 
 # Load OpenCV models
 faceNet = cv2.dnn.readNet(faceModel, faceProto)
