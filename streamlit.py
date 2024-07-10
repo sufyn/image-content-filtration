@@ -91,11 +91,15 @@ st.title("Image Classification and Age Prediction App")
 
 st.write("Upload an image or provide an image URL to classify.")
 
-# Select model
-selected_model_name = st.selectbox("Select Model", list(model_paths.keys()))
+# Select operation mode
+operation_mode = st.selectbox("Select Operation Mode", ["Age and Classification", "Combined Model", "Only Age Prediction"])
 
-# Load the selected model
-model = load_selected_model(selected_model_name)
+# Select model if necessary
+if operation_mode in ["Age and Classification", "Combined Model"]:
+    selected_model_name = st.selectbox("Select Model", list(model_paths.keys()))
+
+    # Load the selected model
+    model = load_selected_model(selected_model_name)
 
 # Upload image file
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "webp"])
@@ -112,7 +116,7 @@ if st.button("Submit"):
             
         st.image(img, caption="Uploaded Image", use_column_width=True)
         
-        if selected_model_name == "Model 2.0 (combined)":
+        if operation_mode == "Combined Model":
             label, class_prediction, age_prediction = predict_combined(img, model)
             categories = ['Adult Content', 'Safe', 'Violent']
             predicted_category = categories[label]
@@ -121,7 +125,7 @@ if st.button("Submit"):
             st.write(f"Safe Confidence: {float(class_prediction[0][1]) * 100:.2f}%")
             st.write(f"Violent Confidence: {float(class_prediction[0][2]) * 100:.2f}%")
             st.write(f"Predicted Age: {age_prediction:.2f}")
-        else:
+        elif operation_mode == "Age and Classification":
             label, prediction = predict_standard(img, model)
             categories = ['Adult Content', 'Safe', 'Violent']
             predicted_category = categories[label]
@@ -129,6 +133,16 @@ if st.button("Submit"):
             st.write(f"Adult Confidence: {float(prediction[0][0]) * 100:.2f}%")
             st.write(f"Safe Confidence: {float(prediction[0][1]) * 100:.2f}%")
             st.write(f"Violent Confidence: {float(prediction[0][2]) * 100:.2f}%")
+            # Also predict age using OpenCV
+            img_cv = np.array(img)
+            result_img, face_boxes, age_predictions = detect_and_predict_age(faceNet, ageNet, img_cv)
+            st.image(result_img, caption="Image with Age Prediction", use_column_width=True)
+            st.write(f"Age Predictions: {age_predictions}")
+        elif operation_mode == "Only Age Prediction":
+            img_cv = np.array(img)
+            result_img, face_boxes, age_predictions = detect_and_predict_age(faceNet, ageNet, img_cv)
+            st.image(result_img, caption="Image with Age Prediction", use_column_width=True)
+            st.write(f"Age Predictions: {age_predictions}")
 
     elif image_url:
         try:
@@ -142,7 +156,7 @@ if st.button("Submit"):
                 
                 st.image(img, caption="Fetched Image", use_column_width=True)
                 
-                if selected_model_name == "Model 2.0 (combined)":
+                if operation_mode == "Combined Model":
                     label, class_prediction, age_prediction = predict_combined(img, model)
                     categories = ['Adult Content', 'Safe', 'Violent']
                     predicted_category = categories[label]
@@ -151,7 +165,7 @@ if st.button("Submit"):
                     st.write(f"Safe Confidence: {float(class_prediction[0][1]) * 100:.2f}%")
                     st.write(f"Violent Confidence: {float(class_prediction[0][2]) * 100:.2f}%")
                     st.write(f"Predicted Age: {age_prediction:.2f}")
-                else:
+                elif operation_mode == "Age and Classification":
                     label, prediction = predict_standard(img, model)
                     categories = ['Adult Content', 'Safe', 'Violent']
                     predicted_category = categories[label]
@@ -159,6 +173,16 @@ if st.button("Submit"):
                     st.write(f"Adult Confidence: {float(prediction[0][0]) * 100:.2f}%")
                     st.write(f"Safe Confidence: {float(prediction[0][1]) * 100:.2f}%")
                     st.write(f"Violent Confidence: {float(prediction[0][2]) * 100:.2f}%")
+                    # Also predict age using OpenCV
+                    img_cv = np.array(img)
+                    result_img, face_boxes, age_predictions = detect_and_predict_age(faceNet, ageNet, img_cv)
+                    st.image(result_img, caption="Image with Age Prediction", use_column_width=True)
+                    st.write(f"Age Predictions: {age_predictions}")
+                elif operation_mode == "Only Age Prediction":
+                    img_cv = np.array(img)
+                    result_img, face_boxes, age_predictions = detect_and_predict_age(faceNet, ageNet, img_cv)
+                    st.image(result_img, caption="Image with Age Prediction", use_column_width=True)
+                    st.write(f"Age Predictions: {age_predictions}")
             else:
                 st.error("Failed to retrieve image from the provided URL")
         except Exception as e:
