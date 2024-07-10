@@ -72,7 +72,9 @@ if st.button("Submit"):
             categories = ['Adult Content', 'Safe', 'Violent']
             predicted_category = categories[label]
             st.write(f"Classification: {predicted_category}")
-            st.write(f"Confidence: {float(class_prediction[0][label]):.2f}")
+            st.write(f"Adult Confidence: {float(class_prediction[0][0]) * 100:.2f}%")
+            st.write(f"Safe Confidence: {float(class_prediction[0][1]) * 100:.2f}%")
+            st.write(f"Violent Confidence: {float(class_prediction[0][2]) * 100:.2f}%")
             st.write(f"Predicted Age: {age_prediction:.2f}")
         else:
             label, prediction = predict_standard(img, model)
