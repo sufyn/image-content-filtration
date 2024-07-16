@@ -3,5 +3,5 @@ numpy
 matplotlib
 opencv-python
 opencv-python-headless
-# opencv-contrib-python
+opencv-contrib-python
 fastai
