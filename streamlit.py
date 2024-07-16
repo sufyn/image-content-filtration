@@ -6,9 +6,12 @@ import numpy as np
 from io import BytesIO
 import requests
 import cv2
-import fastai
 from fastai.vision.learner import load_learner
-from fastai.vision.all import *
+from fastai.data.external import URLs
+from fastai.data.transforms import get_image_files
+
+# Custom functions or classes
+def label_func(f): return f[0]
 
 # Path to models
 faceProto = 'model/opencv_face_detector.pbtxt'
@@ -22,13 +25,11 @@ faceNet = cv2.dnn.readNet(faceModel, faceProto)
 ageNet = cv2.dnn.readNet(ageModel, ageProto)
 
 # Load classification model
-classificationModel = tf.keras.models.load_model(classificationModelPath)
+classificationModel = load_model(classificationModelPath)
 
-# Load FastAI model
-def label_func(f): return f[0]
-
+# Load FastAI model with custom functions
 fastai_model_path = 'model/img_model2.pkl'
-fastai_model = fastai.vision.learner.load_learner(fastai_model_path)
+fastai_model = load_learner(fastai_model_path, cpu=True)
 
 # Age categories
 ageList = ['(0-2)', '(4-6)', '(8-12)', '(15-20)', '(25-32)', '(38-43)', '(48-53)', '(60-100)']
@@ -146,6 +147,16 @@ if st.button("Submit"):
                 st.write("Probabilities:")
                 for i, prob in enumerate(probabilities):
                     st.write(f"{categories[i]}: {prob:.2f}")
+                
+                # Also predict age using OpenCV
+                img_cv = np.array(img)
+                result_img, face_boxes, age_predictions = detect_and_predict_age(faceNet, ageNet, img_cv)
+                st.image(result_img, caption="Image with Age Prediction", use_column_width=True)
+                for age in age_predictions:
+                    if age:
+                        st.write(f"Age: {age} - {ageThresholds[age]}")
+                    else:
+                        st.write("No age predicted")
 
         elif operation_mode == "Only Age Prediction":
             img_cv = np.array(img)
@@ -197,6 +208,16 @@ if st.button("Submit"):
                         st.write("Probabilities:")
                         for i, prob in enumerate(probabilities):
                             st.write(f"{categories[i]}: {prob:.2f}")
+                        
+                        # Also predict age using OpenCV
+                        img_cv = np.array(img)
+                        result_img, face_boxes, age_predictions = detect_and_predict_age(faceNet, ageNet, img_cv)
+                        st.image(result_img, caption="Image with Age Prediction", use_column_width=True)
+                        for age in age_predictions:
+                            if age:
+                                st.write(f"Age: {age} - {ageThresholds[age]}")
+                            else:
+                                st.write("No age predicted")
 
                 elif operation_mode == "Only Age Prediction":
                     img_cv = np.array(img)
@@ -207,7 +228,5 @@ if st.button("Submit"):
                             st.write(f"Age: {age} - {ageThresholds[age]}")
                         else:
                             st.write("No age predicted")
-            else:
-                st.error("Failed to retrieve image from the provided URL")
         except Exception as e:
-            st.error(f"Error fetching image: {e}")
+            st.error(f"An error occurred: {e}")
