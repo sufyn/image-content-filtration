@@ -4,5 +4,4 @@ matplotlib
 opencv-python
 opencv-python-headless
 opencv-contrib-python
-opencv
 fastai
