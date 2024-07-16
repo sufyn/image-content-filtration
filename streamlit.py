@@ -6,6 +6,7 @@ import numpy as np
 from io import BytesIO
 import requests
 import cv2
+import fastai
 from fastai.vision.learner import load_learner
 from fastai.vision.all import *
 
@@ -25,7 +26,7 @@ classificationModel = tf.keras.models.load_model(classificationModelPath)
 
 # Load FastAI model
 fastai_model_path = 'model/img_model2.pkl'
-fastai_model = load_learner(fastai_model_path)
+fastai_model = fastai.vision.learner.load_learner(fastai_model_path)
 
 # Age categories
 ageList = ['(0-2)', '(4-6)', '(8-12)', '(15-20)', '(25-32)', '(38-43)', '(48-53)', '(60-100)']
