@@ -142,11 +142,11 @@ if st.button("Submit"):
             elif model_selection == "model 2":
                 # Predict classification and age using FastAI model
                 label, probabilities = predict_fastai(img, fastai_model)
-                categories = fastai_model.dls.vocab[0]
+                categories = fastai_model.dls.vocab
                 st.write(f"Classification: {label}")
                 st.write("Probabilities:")
                 for i, prob in enumerate(probabilities):
-                    st.write(f"{categories[i]}: {prob:.2f}")
+                    st.write(f"{categories[i]}: {prob *100:.2f}%")
                 
                 # Also predict age using OpenCV
                 img_cv = np.array(img)
@@ -203,11 +203,11 @@ if st.button("Submit"):
                     elif model_selection == "model 2":
                         # Predict classification and age using FastAI model
                         label, probabilities = predict_fastai(img, fastai_model)
-                        categories = fastai_model.dls.vocab[0]
+                        categories = fastai_model.dls.vocab
                         st.write(f"Classification: {label}")
                         st.write("Probabilities:")
                         for i, prob in enumerate(probabilities):
-                            st.write(f"{categories[i]}: {prob:.2f}")
+                            st.write(f"{categories[i]}: {prob *100:.2f}%")
                         
                         # Also predict age using OpenCV
                         img_cv = np.array(img)
