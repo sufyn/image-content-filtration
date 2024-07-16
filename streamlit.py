@@ -7,6 +7,7 @@ from io import BytesIO
 import requests
 import cv2
 from fastai.vision.learner import load_learner
+from fastai.vision.all import *
 
 # Path to models
 faceProto = 'model/opencv_face_detector.pbtxt'
