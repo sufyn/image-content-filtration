@@ -25,7 +25,7 @@ ageNet = cv2.dnn.readNet(ageModel, ageProto)
 classificationModel = tf.keras.models.load_model(classificationModelPath)
 
 # Load FastAI model
-def label_func(f): return f.parent.name
+def label_func(f): return f[0]
 
 fastai_model_path = 'model/img_model2.pkl'
 fastai_model = fastai.vision.learner.load_learner(fastai_model_path)
