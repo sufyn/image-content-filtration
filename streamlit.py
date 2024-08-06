@@ -11,7 +11,7 @@ from fastai.data.external import URLs
 from fastai.data.transforms import get_image_files
 
 # Custom functions or classes
-# def label_func(f): return f[0]
+def label_func(f): return f[0]
 
 faceProto = 'model/opencv_face_detector.pbtxt'
 faceModel = 'model/opencv_face_detector_uint8.pb'
@@ -28,8 +28,8 @@ classificationModel = load_model(classificationModelPath)
 
 #Fast AI model
 import pathlib
-temp = pathlib.PosixPath
-pathlib.PosixPath = pathlib.WindowsPath
+# temp = pathlib.PosixPath
+# pathlib.PosixPath = pathlib.WindowsPath
 
 # Load FastAI model with custom functions
 fastai_model_path = 'model/img_model2.pkl'
