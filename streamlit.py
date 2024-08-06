@@ -13,7 +13,6 @@ from fastai.data.transforms import get_image_files
 # Custom functions or classes
 def label_func(f): return f[0]
 
-# Path to models
 faceProto = 'model/opencv_face_detector.pbtxt'
 faceModel = 'model/opencv_face_detector_uint8.pb'
 ageProto = 'model/age_deploy.prototxt'
@@ -27,9 +26,18 @@ ageNet = cv2.dnn.readNet(ageModel, ageProto)
 # Load classification model
 classificationModel = load_model(classificationModelPath)
 
+#Fast AI model
+import pathlib
+temp = pathlib.PosixPath
+pathlib.PosixPath = pathlib.WindowsPath
+
 # Load FastAI model with custom functions
 fastai_model_path = 'model/img_model2.pkl'
 fastai_model = load_learner(fastai_model_path, cpu=True)
+
+# Load FastAI model with custom functions
+fastai_model_path = 'model/6class_model.pkl'
+fastai_model2 = load_learner(fastai_model_path, cpu=True)
 
 # Age categories
 ageList = ['(0-2)', '(4-6)', '(8-12)', '(15-20)', '(25-32)', '(38-43)', '(48-53)', '(60-100)']
@@ -98,19 +106,14 @@ st.title("Image Classification and Age Prediction App")
 
 st.write("Upload an image or provide an image URL to classify.")
 
-# Select operation mode
 operation_mode = st.selectbox("Select Operation Mode", ["Age and Classification", "Only Age Prediction"])
 
-# Select model
-model_selection = st.selectbox("Select Model", ["model 1", "model 2"])
+model_selection = st.selectbox("Select Model", ["model 1", "model 2","model 3"])
 
-# Upload image file
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "webp"])
 
-# Input image URL
 image_url = st.text_input("Or enter an image URL:")
 
-# Button to trigger image URL submission and classification
 if st.button("Submit"):
     if uploaded_file is not None:
         img = Image.open(uploaded_file)
@@ -121,7 +124,7 @@ if st.button("Submit"):
         
         if operation_mode == "Age and Classification":
             if model_selection == "model 1":
-                # Predict classification using Keras model
+
                 label, prediction = predict_classification(img, classificationModel)
                 categories = ['Adult Content', 'Safe', 'Violent']
                 predicted_category = categories[label]
@@ -130,7 +133,6 @@ if st.button("Submit"):
                 st.write(f"Safe Confidence: {float(prediction[0][1]) * 100:.2f}%")
                 st.write(f"Violent Confidence: {float(prediction[0][2]) * 100:.2f}%")
                 
-                # Also predict age using OpenCV
                 img_cv = np.array(img)
                 result_img, face_boxes, age_predictions = detect_and_predict_age(faceNet, ageNet, img_cv)
                 st.image(result_img, caption="Image with Age Prediction", use_column_width=True)
@@ -140,7 +142,7 @@ if st.button("Submit"):
                     else:
                         st.write("No age predicted")
             elif model_selection == "model 2":
-                # Predict classification and age using FastAI model
+
                 label, probabilities = predict_fastai(img, fastai_model)
                 categories = fastai_model.dls.vocab
                 st.write(f"Classification: {label}")
@@ -148,7 +150,23 @@ if st.button("Submit"):
                 for i, prob in enumerate(probabilities):
                     st.write(f"{categories[i]}: {prob *100:.2f}%")
                 
-                # Also predict age using OpenCV
+                img_cv = np.array(img)
+                result_img, face_boxes, age_predictions = detect_and_predict_age(faceNet, ageNet, img_cv)
+                st.image(result_img, caption="Image with Age Prediction", use_column_width=True)
+                for age in age_predictions:
+                    if age:
+                        st.write(f"Age: {age} - {ageThresholds[age]}")
+                    else:
+                        st.write("No age predicted")
+            elif model_selection == "model 3":
+
+                label, probabilities = predict_fastai(img, fastai_model2)
+                categories = fastai_model2.dls.vocab
+                st.write(f"Classification: {label}")
+                st.write("Probabilities:")
+                for i, prob in enumerate(probabilities):
+                    st.write(f"{categories[i]}: {prob *100:.2f}%")
+                
                 img_cv = np.array(img)
                 result_img, face_boxes, age_predictions = detect_and_predict_age(faceNet, ageNet, img_cv)
                 st.image(result_img, caption="Image with Age Prediction", use_column_width=True)
@@ -182,7 +200,7 @@ if st.button("Submit"):
                 
                 if operation_mode == "Age and Classification":
                     if model_selection == "model 1":
-                        # Predict classification using Keras model
+
                         label, prediction = predict_classification(img, classificationModel)
                         categories = ['Adult Content', 'Safe', 'Violent']
                         predicted_category = categories[label]
@@ -191,7 +209,6 @@ if st.button("Submit"):
                         st.write(f"Safe Confidence: {float(prediction[0][1]) * 100:.2f}%")
                         st.write(f"Violent Confidence: {float(prediction[0][2]) * 100:.2f}%")
                         
-                        # Also predict age using OpenCV
                         img_cv = np.array(img)
                         result_img, face_boxes, age_predictions = detect_and_predict_age(faceNet, ageNet, img_cv)
                         st.image(result_img, caption="Image with Age Prediction", use_column_width=True)
@@ -201,7 +218,7 @@ if st.button("Submit"):
                             else:
                                 st.write("No age predicted")
                     elif model_selection == "model 2":
-                        # Predict classification and age using FastAI model
+
                         label, probabilities = predict_fastai(img, fastai_model)
                         categories = fastai_model.dls.vocab
                         st.write(f"Classification: {label}")
@@ -209,7 +226,23 @@ if st.button("Submit"):
                         for i, prob in enumerate(probabilities):
                             st.write(f"{categories[i]}: {prob *100:.2f}%")
                         
-                        # Also predict age using OpenCV
+                        img_cv = np.array(img)
+                        result_img, face_boxes, age_predictions = detect_and_predict_age(faceNet, ageNet, img_cv)
+                        st.image(result_img, caption="Image with Age Prediction", use_column_width=True)
+                        for age in age_predictions:
+                            if age:
+                                st.write(f"Age: {age} - {ageThresholds[age]}")
+                            else:
+                                st.write("No age predicted")
+                    elif model_selection == "model 3":
+
+                        label, probabilities = predict_fastai(img, fastai_model2)
+                        categories = fastai_model2.dls.vocab
+                        st.write(f"Classification: {label}")
+                        st.write("Probabilities:")
+                        for i, prob in enumerate(probabilities):
+                            st.write(f"{categories[i]}: {prob *100:.2f}%")
+                        
                         img_cv = np.array(img)
                         result_img, face_boxes, age_predictions = detect_and_predict_age(faceNet, ageNet, img_cv)
                         st.image(result_img, caption="Image with Age Prediction", use_column_width=True)
