@@ -36,7 +36,7 @@ fastai_model_path = 'model/img_model2.pkl'
 fastai_model = load_learner(fastai_model_path, cpu=True)
 
 # Load FastAI model with custom functions
-fastai_model_path = 'model/6class_model.pkl'
+fastai_model_path = 'model/updated_6c.pkl'
 fastai_model2 = load_learner(fastai_model_path, cpu=True)
 
 # Age categories
