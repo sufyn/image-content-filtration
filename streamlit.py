@@ -242,7 +242,7 @@ if option == "Image Classification":
                     #                 st.write(f"Age: {age} - {ageThresholds[age]}")
                     #             else:
                     #                 st.write("No age predicted")
-                         if model_selection == "model 3":
+                    if model_selection == "model 3":
     
                             label, probabilities = predict_fastai(img, fastai_model2)
                             categories = fastai_model2.dls.vocab
