@@ -171,6 +171,8 @@ if option == "Image Classification":
                     label, probabilities = predict_fastai(img, fastai_model2)
                     categories = fastai_model2.dls.vocab
                     st.write(f"Classification: {label}")
+                    if label == 'AdultContent' :
+                        st.write("Classification: Safe")
                     st.write("Probabilities:")
                     for i, prob in enumerate(probabilities):
                         st.write(f"{categories[i]}: {prob *100:.2f}%")
@@ -247,6 +249,8 @@ if option == "Image Classification":
                             label, probabilities = predict_fastai(img, fastai_model2)
                             categories = fastai_model2.dls.vocab
                             st.write(f"Classification: {label}")
+                            if label == 'AdultContent' :
+                                st.write("Classification: Safe")
                             st.write("Probabilities:")
                             for i, prob in enumerate(probabilities):
                                 st.write(f"{categories[i]}: {prob *100:.2f}%")
