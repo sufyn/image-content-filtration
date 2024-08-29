@@ -313,7 +313,7 @@ elif option == "Video Classification":
     
     # Upload video
     uploaded_video = st.file_uploader("Choose a video...", type=["mp4", "avi", "mov", "mkv"])
-    model_path = 'model/video_model.pkl'
+    model_path = 'model/updated_6c.pkl'
     
     if uploaded_video is not None and model_path:
         st.video(uploaded_video)
