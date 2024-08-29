@@ -309,11 +309,11 @@ elif option == "Video Classification":
     
     # Streamlit UI
     st.title("Video Classification App")
-    st.write("Upload a video and classify its content as WALLPAPER, SAFE, VIOLENT, or SPAM.")
+    st.write("Upload a video and classify its content as SAFE or VIOLENT.")
     
     # Upload video
     uploaded_video = st.file_uploader("Choose a video...", type=["mp4", "avi", "mov", "mkv"])
-    model_path = 'model/updated_6c.pkl'
+    model_path = 'model/video_model.pkl'
     
     if uploaded_video is not None and model_path:
         st.video(uploaded_video)
@@ -327,11 +327,12 @@ elif option == "Video Classification":
         results = classify_video("temp_video.mp4", model_path)
         
         st.write("Classification Results:")
-        for frame_number, predicted_class in results:
-            st.write(f"Frame {frame_number}: {predicted_class}")
-        
         # Determine if any frame is classified as Violent
         if any(pred_class == "Violent" for _, pred_class in results):
             st.error("Violence detected in the video.")
         else:
             st.success("No violence detected in the video.")
+
+        for frame_number, predicted_class in results:
+            st.write(f"Frame {frame_number}: {predicted_class}")
+        
