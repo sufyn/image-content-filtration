@@ -36,11 +36,8 @@ import pathlib
 # fastai_model = load_learner(fastai_model_path, cpu=True)
 
 # Load FastAI model with custom functions
-fastai_model_path = 'model/updated_6c.pkl'
+fastai_model_path = 'model/final_model.pkl'
 fastai_model2 = load_learner(fastai_model_path, cpu=True)
-
-fastai_model4_path = 'model/5c_model.pkl'
-fastai_model4 = load_learner(fastai_model4_path, cpu=True)
 
 
 # Age categories
@@ -120,7 +117,7 @@ if option == "Image Classification":
     
     # model_selection = st.selectbox("Select Model", ["model 1", "model 2","model 3"])
     
-    model_selection = st.selectbox("Select Model", ["model 3(6class)", "model 4(5class)"])
+    model_selection = st.selectbox("Select Model", ["model 3"])
     
     uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "webp"])
     
@@ -170,32 +167,13 @@ if option == "Image Classification":
             #                 st.write(f"Age: {age} - {ageThresholds[age]}")
             #             else:
             #                 st.write("No age predicted")
-            if model_selection == "model 3(6class)":
+            if model_selection == "model 3":
     
                     label, probabilities = predict_fastai(img, fastai_model2)
                     categories = fastai_model2.dls.vocab
                     st.write(f"Classification: {label}")
                     if label == 'AdultContent' :
                         st.write("Classification: Safe")
-                    st.write("Probabilities:")
-                    for i, prob in enumerate(probabilities):
-                        st.write(f"{categories[i]}: {prob *100:.2f}%")
-                    
-                    img_cv = np.array(img)
-                    result_img, face_boxes, age_predictions = detect_and_predict_age(faceNet, ageNet, img_cv)
-                    st.image(result_img, caption="Image with Age Prediction", use_column_width=True)
-                    for age in age_predictions:
-                        if age:
-                            st.write(f"Age: {age} - {ageThresholds[age]}")
-                        else:
-                            st.write("No age predicted")
-
-            elif model_selection == "model 4(5class)":
-    
-                    label, probabilities = predict_fastai(img, fastai_model4)
-                    categories = fastai_model4.dls.vocab
-                    st.write(f"Classification: {label}")
-                    
                     st.write("Probabilities:")
                     for i, prob in enumerate(probabilities):
                         st.write(f"{categories[i]}: {prob *100:.2f}%")
@@ -267,32 +245,13 @@ if option == "Image Classification":
                     #                 st.write(f"Age: {age} - {ageThresholds[age]}")
                     #             else:
                     #                 st.write("No age predicted")
-                    if model_selection == "model 3(6class)":
+                    if model_selection == "model 3":
     
                             label, probabilities = predict_fastai(img, fastai_model2)
                             categories = fastai_model2.dls.vocab
                             st.write(f"Classification: {label}")
                             if label == 'AdultContent' :
                                 st.write("Classification: Safe")
-                            st.write("Probabilities:")
-                            for i, prob in enumerate(probabilities):
-                                st.write(f"{categories[i]}: {prob *100:.2f}%")
-                            
-                            img_cv = np.array(img)
-                            result_img, face_boxes, age_predictions = detect_and_predict_age(faceNet, ageNet, img_cv)
-                            st.image(result_img, caption="Image with Age Prediction", use_column_width=True)
-                            for age in age_predictions:
-                                if age:
-                                    st.write(f"Age: {age} - {ageThresholds[age]}")
-                                else:
-                                    st.write("No age predicted")
-
-                    elif model_selection == "model 4(5class)":
-    
-                            label, probabilities = predict_fastai(img, fastai_model4)
-                            categories = fastai_model4.dls.vocab
-                            st.write(f"Classification: {label}")
-                            
                             st.write("Probabilities:")
                             for i, prob in enumerate(probabilities):
                                 st.write(f"{categories[i]}: {prob *100:.2f}%")
@@ -355,7 +314,7 @@ elif option == "Video Classification":
     
     # Upload video
     uploaded_video = st.file_uploader("Choose a video...", type=["mp4", "avi", "mov", "mkv"])
-    model_path = 'model/5c_model.pkl'
+    model_path = 'model/final_model.pkl'
     
     if uploaded_video is not None and model_path:
         st.video(uploaded_video)
